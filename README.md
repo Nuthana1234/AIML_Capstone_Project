@@ -2,6 +2,12 @@
 
 A three-module capstone project covering web data collection, data analytics and machine learning, and a RAG-based customer support assistant.
 
+## Project Status
+
+All three capstone modules have been implemented:
+- Data Pipeline
+- Titanic Analytics and Modeling
+- Zepto RAG Support Assistant
 ## Repository Structure
 
 ```text
