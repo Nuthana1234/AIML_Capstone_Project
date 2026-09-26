@@ -7,14 +7,19 @@ df = pd.read_csv("titanic_cleaned.csv")
 
 
 # ============================================================
-# 1. Survival Rate by Sex
+# 1. Survival Rate by Sex — Boolean Masking
 # ============================================================
 
-survival_by_sex = (
-    df.groupby("sex")["survived"]
-    .mean()
-    .reset_index()
-)
+female_mask = df["sex"] == "female"
+male_mask = df["sex"] == "male"
+
+survival_by_sex = pd.DataFrame({
+    "sex": ["female", "male"],
+    "survival_rate": [
+        df.loc[female_mask, "survived"].mean(),
+        df.loc[male_mask, "survived"].mean()
+    ]
+})
 
 print("=" * 70)
 print("SURVIVAL RATE BY SEX")
@@ -25,7 +30,7 @@ plt.figure(figsize=(7, 5))
 sns.barplot(
     data=survival_by_sex,
     x="sex",
-    y="survived"
+    y="survival_rate"
 )
 plt.ylabel("Survival Rate")
 plt.xlabel("Sex")
@@ -35,14 +40,20 @@ plt.show()
 
 
 # ============================================================
-# 2. Survival Rate by Passenger Class
+# 2. Survival Rate by Passenger Class — Boolean Masking
 # ============================================================
 
-survival_by_class = (
-    df.groupby("pclass")["survived"]
-    .mean()
-    .reset_index()
-)
+class_results = []
+
+for passenger_class in sorted(df["pclass"].unique()):
+    class_mask = df["pclass"] == passenger_class
+
+    class_results.append({
+        "pclass": passenger_class,
+        "survival_rate": df.loc[class_mask, "survived"].mean()
+    })
+
+survival_by_class = pd.DataFrame(class_results)
 
 print("\n" + "=" * 70)
 print("SURVIVAL RATE BY PCLASS")
@@ -53,7 +64,7 @@ plt.figure(figsize=(7, 5))
 sns.barplot(
     data=survival_by_class,
     x="pclass",
-    y="survived"
+    y="survival_rate"
 )
 plt.ylabel("Survival Rate")
 plt.xlabel("Passenger Class")
@@ -63,14 +74,29 @@ plt.show()
 
 
 # ============================================================
-# 3. Survival Rate by Sex + Passenger Class
+# 3. Survival Rate by Sex + Passenger Class — Boolean Masking
 # ============================================================
 
-survival_by_sex_class = (
-    df.groupby(["sex", "pclass"])["survived"]
-    .mean()
-    .reset_index()
-)
+sex_class_results = []
+
+for sex in sorted(df["sex"].unique()):
+    for passenger_class in sorted(df["pclass"].unique()):
+
+        combined_mask = (
+            (df["sex"] == sex) &
+            (df["pclass"] == passenger_class)
+        )
+
+        sex_class_results.append({
+            "sex": sex,
+            "pclass": passenger_class,
+            "survival_rate": df.loc[
+                combined_mask,
+                "survived"
+            ].mean()
+        })
+
+survival_by_sex_class = pd.DataFrame(sex_class_results)
 
 print("\n" + "=" * 70)
 print("SURVIVAL RATE BY SEX AND PCLASS")
@@ -81,7 +107,7 @@ plt.figure(figsize=(8, 5))
 sns.barplot(
     data=survival_by_sex_class,
     x="pclass",
-    y="survived",
+    y="survival_rate",
     hue="sex"
 )
 plt.ylabel("Survival Rate")

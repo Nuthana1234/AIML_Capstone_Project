@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
@@ -14,7 +15,13 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 # 1. LOAD DATA
 # ============================================================
 
-df = pd.read_csv("titanic_cleaned.csv")
+# Get the folder containing this Python file
+BASE_DIR = Path(__file__).resolve().parent
+
+# Dataset is in the same analytics folder as this script
+DATA_PATH = BASE_DIR / "titanic_cleaned.csv"
+
+df = pd.read_csv(DATA_PATH)
 
 # Target
 y = df["fare"]
@@ -189,11 +196,21 @@ plt.ylabel("Residuals")
 plt.title("Residual Plot - Fare Regression")
 
 plt.tight_layout()
+
+# Save plot in the analytics folder
+PLOT_PATH = BASE_DIR / "fare_regression_residuals.png"
+
+plt.savefig(
+    PLOT_PATH,
+    dpi=300,
+    bbox_inches="tight"
+)
+
 plt.show()
 
 
 # ============================================================
-# 11. HETEROSCEDASTICITY CONCLUSION
+# 11. HETEROSCEDASTICITY CHECK
 # ============================================================
 
 print("\n" + "=" * 70)
@@ -213,5 +230,8 @@ print(
     "If the residuals have approximately constant spread around "
     "zero, there is no strong visual evidence of heteroscedasticity."
 )
+
+print("\nResidual plot saved to:")
+print(PLOT_PATH)
 
 print("\nFare regression completed successfully.")

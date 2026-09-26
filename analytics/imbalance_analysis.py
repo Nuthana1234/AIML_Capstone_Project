@@ -193,4 +193,5 @@ print("\n" + "=" * 70)
 print("CLASS IMBALANCE COMPARISON")
 print("=" * 70)
 
-print(comparison_df.round(4))
+comparison_df.to_csv("class_imbalance_comparison.csv")
+print("\nSaved class imbalance comparison to class_imbalance_comparison.csv")
